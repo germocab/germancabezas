@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Germán Stöwhas — Digital Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f4f0; --surface: #ffffff;
+    --ink: #111110; --ink-2: #48473f; --ink-3: #888780;
+    --gold: #c8a96e; --gold-light: #e8d5a8;
+    --radius: 20px; --nav-h: 68px;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; cursor: none; }
+
+  /* CURSOR */
+  .cursor-dot { position: fixed; top: 0; left: 0; z-index: 9999; width: 8px; height: 8px; border-radius: 50%; background: var(--ink); transform: translate(-50%,-50%); pointer-events: none; mix-blend-mode: multiply; }
+  .cursor-ring { position: fixed; top: 0; left: 0; z-index: 9998; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,0.28); transform: translate(-50%,-50%); pointer-events: none; transition: width .3s, height .3s, opacity .3s; }
+  body:has(a:hover) .cursor-ring, body:has(button:hover) .cursor-ring { width: 52px; height: 52px; opacity: 0.4; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: var(--nav-h); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; backdrop-filter: blur(24px) saturate(180%); background: rgba(245,244,240,0.78); border-bottom: 1px solid rgba(0,0,0,0.06); transition: background .4s; }
+  .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-logo-mark { width: 34px; height: 20px; flex-shrink: 0; }
+  .nav-logo-text { display: flex; flex-direction: column; line-height: 1.18; }
+  .nav-logo-name { font-family: 'DM Serif Display', serif; font-size: 0.95rem; color: var(--ink); letter-spacing: 0.01em; }
+  .nav-logo-sub { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; transition: color .2s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em; padding: 10px 22px; border-radius: 100px; background: var(--ink); color: white; text-decoration: none; transition: background .2s, transform .2s; text-transform: uppercase; }
+  .nav-cta:hover { background: #2e2e2c; transform: scale(1.02); }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: calc(var(--nav-h) + 40px) 24px 80px; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 80% 55% at 50% 8%, rgba(200,169,110,0.14) 0%, transparent 68%), radial-gradient(ellipse 45% 35% at 82% 82%, rgba(180,160,120,0.07) 0%, transparent 60%); }
+  .hero-logo-bg { position: absolute; z-index: 0; width: min(680px,90vw); opacity: 0.035; top: 50%; left: 50%; transform: translate(-50%,-52%); pointer-events: none; animation: rotateSlow 60s linear infinite; }
+  @keyframes rotateSlow { from{transform:translate(-50%,-52%) rotate(0deg)} to{transform:translate(-50%,-52%) rotate(360deg)} }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 100px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.65); backdrop-filter: blur(10px); font-size: 0.7rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 36px; z-index: 1; animation: fadeUp .8s .1s both; }
+  .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2.2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
+  .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(3rem,8vw,7.4rem); line-height: 1.04; letter-spacing: -0.02em; color: var(--ink); max-width: 880px; z-index: 1; animation: fadeUp .9s .25s both; }
+  .hero h1 em { font-style: italic; color: var(--ink-2); }
+  .hero-sub { margin-top: 28px; font-size: clamp(.95rem,2vw,1.15rem); color: var(--ink-3); max-width: 500px; line-height: 1.75; font-weight: 300; z-index: 1; animation: fadeUp .9s .4s both; }
+  .hero-name-tag { margin-top: 12px; z-index: 1; font-size: 0.76rem; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; animation: fadeUp .9s .5s both; }
+  .hero-actions { display: flex; gap: 14px; margin-top: 44px; z-index: 1; animation: fadeUp .9s .58s both; }
+  .btn-primary { padding: 15px 34px; border-radius: 100px; background: var(--ink); color: white; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-decoration: none; transition: transform .2s, box-shadow .2s; text-transform: uppercase; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.18); }
+  .btn-ghost { padding: 15px 34px; border-radius: 100px; border: 1.5px solid rgba(0,0,0,0.16); color: var(--ink-2); font-size: 0.82rem; letter-spacing: 0.05em; text-decoration: none; transition: border-color .2s, color .2s, transform .2s; text-transform: uppercase; }
+  .btn-ghost:hover { border-color: var(--ink); color: var(--ink); transform: translateY(-2px); }
+  .shape { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; }
+  .shape-1 { width: 520px; height: 520px; background: radial-gradient(circle, rgba(200,169,110,.07) 0%, transparent 70%); top: -120px; right: -160px; animation: floatA 14s ease-in-out infinite; }
+  .shape-2 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(150,140,120,.06) 0%, transparent 70%); bottom: 40px; left: -90px; animation: floatA 17s ease-in-out infinite reverse; }
+  @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-28px)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+  .scroll-hint { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; animation: fadeUp 1s .95s both; }
+  .scroll-hint span { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
+  .scroll-line { width: 1px; height: 44px; background: linear-gradient(to bottom, var(--ink-3), transparent); animation: scrollDrop 2.2s ease-in-out infinite; }
+  @keyframes scrollDrop { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+  /* COMMON */
+  section { padding: 120px 48px; }
+  .section-label { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 14px; }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem,4.5vw,3.6rem); line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); }
+  .section-title em { font-style: italic; color: var(--ink-2); }
+
+  /* SERVICES */
+  #services { background: var(--bg); }
+  .services-intro { max-width: 540px; margin-bottom: 68px; }
+  .services-intro p { margin-top: 20px; color: var(--ink-3); line-height: 1.78; font-weight: 300; font-size: 1.02rem; }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(272px,1fr)); gap: 18px; }
+  .service-card { background: var(--surface); border-radius: var(--radius); padding: 42px 34px; position: relative; overflow: hidden; transition: transform .35s cubic-bezier(.22,.68,0,1.2), box-shadow .35s; border: 1px solid rgba(0,0,0,0.05); }
+  .service-card::after { content:''; position:absolute; inset:0; border-radius:var(--radius); background:linear-gradient(135deg,transparent 55%,rgba(200,169,110,.07) 100%); opacity:0; transition:opacity .4s; }
+  .service-card:hover { transform: translateY(-6px); box-shadow: 0 24px 56px rgba(0,0,0,0.08); }
+  .service-card:hover::after { opacity: 1; }
+  .service-card.featured { background: var(--ink); }
+  .service-card.featured .service-num, .service-card.featured .service-desc { color: rgba(255,255,255,0.45); }
+  .service-card.featured .service-name { color: white; }
+  .service-card.featured .service-tag { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); }
+  .service-num { font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 26px; }
+  .service-icon { width: 44px; height: 44px; margin-bottom: 22px; display: flex; align-items: center; justify-content: center; }
+  .service-icon svg { width: 26px; height: 26px; }
+  .service-name { font-family: 'DM Serif Display', serif; font-size: 1.6rem; line-height: 1.2; margin-bottom: 14px; color: var(--ink); }
+  .service-desc { font-size: 0.86rem; color: var(--ink-3); line-height: 1.76; font-weight: 300; }
+  .service-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 26px; }
+  .service-tag { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 11px; border-radius: 100px; background: rgba(0,0,0,0.05); color: var(--ink-3); }
+
+  /* PROJECTS */
+  #projects { background: var(--ink); padding: 120px 48px; }
+  #projects .section-label { color: var(--gold); }
+  #projects .section-title { color: white; }
+  #projects .section-title em { color: rgba(255,255,255,0.35); }
+  .projects-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; flex-wrap: wrap; gap: 24px; }
+  .projects-header p { color: rgba(255,255,255,0.4); font-size: 0.88rem; line-height: 1.82; max-width: 380px; font-weight: 300; }
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .project-card { border-radius: var(--radius); overflow: hidden; position: relative; cursor: none; transition: transform .4s cubic-bezier(.22,.68,0,1.2); }
+  .project-card:hover { transform: scale(1.015); }
+  .project-card.tall { grid-row: span 2; }
+  .project-thumb { width: 100%; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .project-card.tall .project-thumb { aspect-ratio: auto; height: 100%; min-height: 460px; }
+  .project-thumb-inner { position: absolute; inset: 0; transition: transform .6s cubic-bezier(.22,.68,0,1.2); }
+  .project-card:hover .project-thumb-inner { transform: scale(1.04); }
+  .theme-ux  { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+  .theme-brand { background: linear-gradient(135deg, #2d1b0e 0%, #5c3317 50%, #8b4513 100%); }
+  .theme-wire { background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #2e5f8a 100%); }
+  .theme-code { background: linear-gradient(135deg, #0d2416 0%, #1a4d2e 50%, #2d7a4f 100%); }
+  .project-deco { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .project-mock { width: 70%; border-radius: 10px; background: rgba(255,255,255,.07); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.1); overflow: hidden; box-shadow: 0 36px 72px rgba(0,0,0,.4); }
+  .mock-bar { height: 30px; background: rgba(255,255,255,.06); display: flex; align-items: center; padding: 0 12px; gap: 5px; border-bottom: 1px solid rgba(255,255,255,.05); }
+  .mock-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .mock-body { padding: 14px 12px; }
+  .mock-row { height: 7px; border-radius: 4px; background: rgba(255,255,255,.11); margin-bottom: 7px; }
+  .mock-row.short { width: 58%; } .mock-row.medium { width: 78%; } .mock-row.accent { background: rgba(200,169,110,.38); width: 38%; }
+  .mock-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
+  .mock-card { height: 44px; border-radius: 5px; background: rgba(255,255,255,.06); }
+  .project-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 26px 26px 22px; background: linear-gradient(to top, rgba(0,0,0,.88) 0%, transparent 100%); }
+  .project-cat { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+  .project-name { font-family: 'DM Serif Display', serif; font-size: 1.35rem; color: white; line-height: 1.2; }
+  .project-desc { font-size: 0.76rem; color: rgba(255,255,255,.45); margin-top: 5px; font-weight: 300; }
+
+  /* ABOUT */
+  #about { background: var(--bg); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; padding: 120px 80px; }
+  .about-visual { position: relative; aspect-ratio: 3/4; border-radius: 24px; overflow: hidden; }
+  .about-canvas { width: 100%; height: 100%; background: linear-gradient(160deg, #161614 0%, #272724 50%, #161612 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; position: relative; }
+  .about-logo-watermark { width: 75%; opacity: 0.07; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+  .about-gvisions-logo { width: 72px; margin-bottom: 22px; z-index: 1; filter: drop-shadow(0 0 28px rgba(200,169,110,.35)); }
+  .about-name-display { font-family: 'DM Serif Display', serif; font-size: clamp(1.6rem,3vw,2.4rem); color: rgba(255,255,255,.88); line-height: 1.1; letter-spacing: -0.02em; text-align: center; z-index: 1; }
+  .about-name-display span { display: block; font-family: 'DM Sans', sans-serif; font-style: normal; font-size: 0.6em; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,.28); margin-top: 8px; }
+  .about-rings { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .ring { position: absolute; border-radius: 50%; border: 1px solid rgba(200,169,110,.12); }
+  .ring-1 { width: 180px; height: 180px; } .ring-2 { width: 320px; height: 320px; border-color: rgba(200,169,110,.07); } .ring-3 { width: 460px; height: 460px; border-color: rgba(200,169,110,.04); }
+  .about-stat-card { position: absolute; background: white; border-radius: 14px; padding: 14px 18px; box-shadow: 0 18px 40px rgba(0,0,0,.28); min-width: 120px; }
+  .about-stat-card.card-a { bottom: 36px; left: -22px; } .about-stat-card.card-b { top: 56px; right: -22px; }
+  .stat-val { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--ink); line-height: 1; }
+  .stat-lbl { font-size: 0.65rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 3px; }
+  .about-text .section-title { margin-bottom: 26px; }
+  .about-text p { color: var(--ink-2); line-height: 1.88; font-size: 1rem; font-weight: 300; margin-bottom: 18px; }
+  .about-tags { display: flex; flex-wrap: wrap; gap: 9px; margin: 28px 0; }
+  .about-tag { padding: 7px 16px; border-radius: 100px; border: 1.5px solid rgba(0,0,0,.11); color: var(--ink-2); font-size: 0.75rem; letter-spacing: 0.04em; transition: border-color .2s, background .2s; }
+  .about-tag:hover { border-color: var(--gold); background: rgba(200,169,110,.05); }
+
+  /* PROCESS */
+  #process { background: white; }
+  .process-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; margin-top: 68px; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,.06); }
+  .process-step { padding: 42px 30px; border-right: 1px solid rgba(0,0,0,.06); transition: background .3s; }
+  .process-step:last-child { border-right: none; }
+  .process-step:hover { background: var(--bg); }
+  .process-num { font-family: 'DM Serif Display', serif; font-size: 3.2rem; color: rgba(0,0,0,.05); line-height: 1; margin-bottom: 22px; }
+  .process-title { font-family: 'DM Serif Display', serif; font-size: 1.25rem; color: var(--ink); margin-bottom: 10px; }
+  .process-desc { font-size: 0.83rem; color: var(--ink-3); line-height: 1.72; font-weight: 300; }
+
+  /* CONTACT */
+  #contact { background: var(--ink); text-align: center; padding: 140px 48px; }
+  #contact .section-label { color: var(--gold); }
+  #contact .section-title { color: white; margin: 14px 0 26px; }
+  #contact .section-title em { color: rgba(255,255,255,.35); }
+  #contact > p { color: rgba(255,255,255,.4); font-size: 0.97rem; max-width: 460px; margin: 0 auto 52px; line-height: 1.82; font-weight: 300; }
+  .contact-brand { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 48px; }
+  .contact-brand svg { width: 52px; height: 31px; }
+  .contact-brand-text { text-align: left; }
+  .contact-brand-name { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: white; letter-spacing: -0.01em; line-height: 1.1; }
+  .contact-brand-sub { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,.28); margin-top: 4px; }
+  .contact-email { font-family: 'DM Serif Display', serif; font-size: clamp(1.5rem,3.2vw,2.6rem); color: white; text-decoration: none; display: inline-block; border-bottom: 1px solid rgba(255,255,255,.18); padding-bottom: 7px; transition: border-color .2s, color .2s; margin-bottom: 48px; }
+  .contact-email:hover { border-color: var(--gold); color: var(--gold-light); }
+  .social-links { display: flex; justify-content: center; gap: 28px; }
+  .social-link { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,.28); text-decoration: none; transition: color .2s; }
+  .social-link:hover { color: white; }
+
+  /* FOOTER */
+  footer { background: var(--ink); border-top: 1px solid rgba(255,255,255,.05); padding: 26px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .footer-brand { display: flex; align-items: center; gap: 10px; }
+  .footer-brand svg { width: 24px; height: 14px; opacity: 0.35; }
+  footer span { font-size: 0.72rem; color: rgba(255,255,255,.2); letter-spacing: 0.04em; }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: .1s; } .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; } .reveal-delay-4 { transition-delay: .4s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 960px) {
+    nav { padding: 0 24px; } .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    #about { grid-template-columns: 1fr; padding: 80px 24px; gap: 52px; }
+    .about-visual { max-width: 400px; margin: 0 auto; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.tall { grid-row: span 1; }
+    .process-grid { grid-template-columns: 1fr 1fr; }
+    footer { padding: 20px 24px; } #contact { padding: 100px 24px; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 2.7rem; }
+    .hero-actions { flex-direction: column; align-items: center; }
+    .process-grid { grid-template-columns: 1fr; }
+    .contact-brand { flex-direction: column; text-align: center; }
+    .contact-brand-text { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">
+    <svg class="nav-logo-mark" viewBox="0 0 160 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M43.0878 3.53538L3.07158 46.206C1.7051 47.6631 1.72194 49.936 3.10986 51.3727L43.0932 92.7616C43.7993 93.4925 44.7719 93.9053 45.7882 93.9053H112.519C113.511 93.9053 114.463 93.5118 115.165 92.8111L156.542 51.5375C158.039 50.0437 158.004 47.6074 156.465 46.1571L111.047 3.37115C110.351 2.71622 109.432 2.3515 108.477 2.3515L45.8211 2.35149C44.7855 2.35149 43.7962 2.78003 43.0878 3.53538Z" stroke="#111110" stroke-width="3.74713"/>
+      <path d="M81.0263 76.8503C75.8976 76.8503 71.3625 75.7581 67.421 73.5736C63.4794 71.3417 60.3927 68.3024 58.1608 64.4559C55.9288 60.5619 54.8128 56.098 54.8128 51.0642C54.8128 46.0305 55.9288 41.5903 58.1608 37.7438C60.3927 33.8497 63.4794 30.8105 67.421 28.626C71.3625 26.3941 75.8976 25.2781 81.0263 25.2781C84.398 25.2781 87.366 25.753 89.9304 26.7027C92.5422 27.6525 94.7979 28.9584 96.6975 30.6205C98.597 32.2351 100.212 34.1109 101.541 36.2479L90.5715 42.73C89.9066 41.6853 89.0519 40.7593 88.0071 39.952C87.0099 39.1447 85.8939 38.5273 84.6592 38.0999C83.472 37.625 82.261 37.3876 81.0263 37.3876C78.557 37.3876 76.3725 37.9812 74.473 39.1684C72.5734 40.3081 71.0776 41.899 69.9853 43.941C68.8931 45.983 68.347 48.3574 68.347 51.0642C68.347 53.7235 68.8694 56.098 69.9141 58.1874C70.9588 60.2769 72.4547 61.9153 74.4017 63.1025C76.3962 64.2897 78.7232 64.8833 81.3825 64.8833C83.282 64.8833 84.9679 64.5509 86.44 63.886C87.9121 63.1737 89.0756 62.2002 89.9304 60.9655C90.7852 59.6833 91.2126 58.2112 91.2126 56.5491L103.749 54.1984C103.749 59.2322 102.776 63.4349 100.829 66.8066C98.8819 70.1782 96.1988 72.6951 92.7797 74.3572C89.408 76.0193 85.4902 76.8503 81.0263 76.8503ZM80.1003 58.045V48.0724H103.749V55.4094L96.2701 58.045H80.1003Z" fill="#111110"/>
+      <line x1="54.9612" y1="12.6731" x2="15.7994" y2="53.4399" stroke="#111110" stroke-width="15.334"/>
+      <line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(-0.692769 -0.721159 -0.721159 0.692769 49.4321 88.8951)" stroke="#111110" stroke-width="15.334"/>
+      <line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(0.692769 0.721159 0.721159 -0.692769 109.161 7.36168)" stroke="#111110" stroke-width="15.334"/>
+      <line x1="103.632" y1="83.5836" x2="142.794" y2="42.8169" stroke="#111110" stroke-width="15.334"/>
+    </svg>
+    <div class="nav-logo-text">
+      <span class="nav-logo-name">Germán Stöwhas</span>
+      <span class="nav-logo-sub">GVisions Studio</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#process">Process</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Let's Talk</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="shape shape-1"></div>
+  <div class="shape shape-2"></div>
+  <!-- GVisions watermark rotating bg -->
+  <svg class="hero-logo-bg" viewBox="0 0 160 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M43.0878 3.53538L3.07158 46.206C1.7051 47.6631 1.72194 49.936 3.10986 51.3727L43.0932 92.7616C43.7993 93.4925 44.7719 93.9053 45.7882 93.9053H112.519C113.511 93.9053 114.463 93.5118 115.165 92.8111L156.542 51.5375C158.039 50.0437 158.004 47.6074 156.465 46.1571L111.047 3.37115C110.351 2.71622 109.432 2.3515 108.477 2.3515L45.8211 2.35149C44.7855 2.35149 43.7962 2.78003 43.0878 3.53538Z" stroke="#111110" stroke-width="3.74713"/>
+    <path d="M81.0263 76.8503C75.8976 76.8503 71.3625 75.7581 67.421 73.5736C63.4794 71.3417 60.3927 68.3024 58.1608 64.4559C55.9288 60.5619 54.8128 56.098 54.8128 51.0642C54.8128 46.0305 55.9288 41.5903 58.1608 37.7438C60.3927 33.8497 63.4794 30.8105 67.421 28.626C71.3625 26.3941 75.8976 25.2781 81.0263 25.2781C84.398 25.2781 87.366 25.753 89.9304 26.7027C92.5422 27.6525 94.7979 28.9584 96.6975 30.6205C98.597 32.2351 100.212 34.1109 101.541 36.2479L90.5715 42.73C89.9066 41.6853 89.0519 40.7593 88.0071 39.952C87.0099 39.1447 85.8939 38.5273 84.6592 38.0999C83.472 37.625 82.261 37.3876 81.0263 37.3876C78.557 37.3876 76.3725 37.9812 74.473 39.1684C72.5734 40.3081 71.0776 41.899 69.9853 43.941C68.8931 45.983 68.347 48.3574 68.347 51.0642C68.347 53.7235 68.8694 56.098 69.9141 58.1874C70.9588 60.2769 72.4547 61.9153 74.4017 63.1025C76.3962 64.2897 78.7232 64.8833 81.3825 64.8833C83.282 64.8833 84.9679 64.5509 86.44 63.886C87.9121 63.1737 89.0756 62.2002 89.9304 60.9655C90.7852 59.6833 91.2126 58.2112 91.2126 56.5491L103.749 54.1984C103.749 59.2322 102.776 63.4349 100.829 66.8066C98.8819 70.1782 96.1988 72.6951 92.7797 74.3572C89.408 76.0193 85.4902 76.8503 81.0263 76.8503ZM80.1003 58.045V48.0724H103.749V55.4094L96.2701 58.045H80.1003Z" fill="#111110"/>
+    <line x1="54.9612" y1="12.6731" x2="15.7994" y2="53.4399" stroke="#111110" stroke-width="15.334"/>
+    <line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(-0.692769 -0.721159 -0.721159 0.692769 49.4321 88.8951)" stroke="#111110" stroke-width="15.334"/>
+    <line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(0.692769 0.721159 0.721159 -0.692769 109.161 7.36168)" stroke="#111110" stroke-width="15.334"/>
+    <line x1="103.632" y1="83.5836" x2="142.794" y2="42.8169" stroke="#111110" stroke-width="15.334"/>
+  </svg>
+
+  <div class="hero-badge"><span class="hero-badge-dot"></span>Available for new projects</div>
+  <h1>Design that makes<br>products <em>feel right.</em></h1>
+  <p class="hero-sub">Digital designer crafting intuitive experiences — from wireframes to brand identity, UX/UI to functional platforms.</p>
+  <p class="hero-name-tag">Germán Stöwhas · GVisions Studio</p>
+  <div class="hero-actions">
+    <a href="#projects" class="btn-primary">View My Work</a>
+    <a href="#services" class="btn-ghost">What I Do</a>
+  </div>
+  <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-intro reveal">
+    <p class="section-label">What I Offer</p>
+    <h2 class="section-title">Design across<br>every <em>dimension.</em></h2>
+    <p>From the first sketch to the final pixel — I take ideas and shape them into experiences that users actually enjoy. Clean thinking, bold execution.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card featured reveal reveal-delay-1">
+      <div class="service-num">01</div>
+      <div class="service-icon"><svg viewBox="0 0 28 28" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"><rect x="3" y="5" width="22" height="16" rx="2"/><line x1="3" y1="10" x2="25" y2="10"/><line x1="9" y1="10" x2="9" y2="21"/><circle cx="6" cy="7.5" r="1" fill="rgba(255,255,255,0.5)"/><circle cx="10" cy="7.5" r="1" fill="rgba(255,255,255,0.5)"/></svg></div>
+      <div class="service-name">UX / UI Design</div>
+      <div class="service-desc">Full-cycle interface design — research, wireframes, high-fidelity mockups, and interactive prototypes that put users first.</div>
+      <div class="service-tags"><span class="service-tag">User Research</span><span class="service-tag">Prototyping</span><span class="service-tag">Figma</span></div>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-num">02</div>
+      <div class="service-icon"><svg viewBox="0 0 28 28" fill="none" stroke="var(--ink-2)" stroke-width="1.5"><rect x="3" y="3" width="10" height="10" rx="2"/><rect x="15" y="3" width="10" height="10" rx="2"/><rect x="3" y="15" width="10" height="10" rx="2"/><rect x="15" y="15" width="10" height="10" rx="2"/></svg></div>
+      <div class="service-name">Wireframing</div>
+      <div class="service-desc">Rapid ideation and structural blueprints for web and mobile apps — clear, communicative, and developer-friendly.</div>
+      <div class="service-tags"><span class="service-tag">Web</span><span class="service-tag">Mobile Apps</span><span class="service-tag">Low/High Fidelity</span></div>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-num">03</div>
+      <div class="service-icon"><svg viewBox="0 0 28 28" fill="none" stroke="var(--ink-2)" stroke-width="1.5"><circle cx="14" cy="14" r="5"/><path d="M14 3v4M14 21v4M3 14h4M21 14h4"/><path d="M6.3 6.3l2.8 2.8M18.9 18.9l2.8 2.8M6.3 21.7l2.8-2.8M18.9 9.1l2.8-2.8"/></svg></div>
+      <div class="service-name">Branding</div>
+      <div class="service-desc">Brand identities that are coherent, memorable, and built to scale — logos, systems, guidelines, and visual language.</div>
+      <div class="service-tags"><span class="service-tag">Logo Design</span><span class="service-tag">Brand Systems</span><span class="service-tag">Guidelines</span></div>
+    </div>
+    <div class="service-card reveal reveal-delay-4">
+      <div class="service-num">04</div>
+      <div class="service-icon"><svg viewBox="0 0 28 28" fill="none" stroke="var(--ink-2)" stroke-width="1.5"><polyline points="7,10 3,14 7,18"/><polyline points="21,10 25,14 21,18"/><line x1="16" y1="6" x2="12" y2="22"/></svg></div>
+      <div class="service-name">Platforms &amp; Dev</div>
+      <div class="service-desc">Problem-solving through custom-built tools — admin panels, management systems, and internal platforms that actually work.</div>
+      <div class="service-tags"><span class="service-tag">Web Apps</span><span class="service-tag">Admin Tools</span><span class="service-tag">Prototypes</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="projects-header">
+    <div><p class="section-label">Selected Work</p><h2 class="section-title">Projects that<br><em>made a difference.</em></h2></div>
+    <p>A curated selection of design and development work spanning digital products, brand identities, and custom platforms.</p>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card tall reveal">
+      <div class="project-thumb"><div class="project-thumb-inner theme-ux"><div class="project-deco"><div class="project-mock" style="width:68%"><div class="mock-bar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#febc2e"></div><div class="mock-dot" style="background:#28c840"></div></div><div class="mock-body"><div class="mock-row accent"></div><div class="mock-row medium" style="margin-top:12px"></div><div class="mock-row short"></div><div class="mock-row medium"></div><div class="mock-grid"><div class="mock-card"></div><div class="mock-card"></div><div class="mock-card"></div><div class="mock-card"></div></div></div></div></div></div></div>
+      <div class="project-info"><div class="project-cat">UX/UI Design</div><div class="project-name">Fintech Dashboard Redesign</div><div class="project-desc">Complete UX overhaul — reduced user drop-off by 40%</div></div>
+    </div>
+    <div class="project-card reveal reveal-delay-1">
+      <div class="project-thumb"><div class="project-thumb-inner theme-brand"><div class="project-deco" style="flex-direction:column;gap:12px"><div style="font-family:'DM Serif Display',serif;font-size:3.2rem;color:rgba(255,255,255,0.9);letter-spacing:-0.04em;line-height:1">Maple<br><span style="font-style:italic;font-size:1.8rem;opacity:0.45">&amp; Co.</span></div><div style="display:flex;gap:8px"><div style="width:26px;height:26px;border-radius:50%;background:#c8a96e"></div><div style="width:26px;height:26px;border-radius:50%;background:#8b4513"></div><div style="width:26px;height:26px;border-radius:50%;background:#f5f0e8"></div></div></div></div></div>
+      <div class="project-info"><div class="project-cat">Brand Identity</div><div class="project-name">Maple &amp; Co. Rebrand</div><div class="project-desc">Full brand identity system from ground up</div></div>
+    </div>
+    <div class="project-card reveal reveal-delay-2">
+      <div class="project-thumb"><div class="project-thumb-inner theme-wire"><div class="project-deco"><div style="width:72%;display:flex;flex-direction:column;gap:7px"><div style="display:grid;grid-template-columns:1fr 2fr;gap:7px;height:56px"><div style="background:rgba(255,255,255,.06);border-radius:5px;border:1px dashed rgba(255,255,255,.14)"></div><div style="background:rgba(255,255,255,.06);border-radius:5px;border:1px dashed rgba(255,255,255,.14)"></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;height:76px"><div style="background:rgba(200,169,110,.14);border-radius:5px;border:1px dashed rgba(200,169,110,.28)"></div><div style="background:rgba(255,255,255,.06);border-radius:5px;border:1px dashed rgba(255,255,255,.14)"></div><div style="background:rgba(255,255,255,.06);border-radius:5px;border:1px dashed rgba(255,255,255,.14)"></div></div><div style="height:38px;background:rgba(255,255,255,.04);border-radius:5px;border:1px dashed rgba(255,255,255,.09)"></div></div></div></div></div>
+      <div class="project-info"><div class="project-cat">Wireframing</div><div class="project-name">E-commerce App Architecture</div><div class="project-desc">30-screen wireframe system for mobile platform</div></div>
+    </div>
+    <div class="project-card reveal reveal-delay-3">
+      <div class="project-thumb"><div class="project-thumb-inner theme-code"><div class="project-deco"><div class="project-mock" style="width:75%"><div class="mock-bar" style="justify-content:space-between"><div style="display:flex;gap:5px"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#febc2e"></div><div class="mock-dot" style="background:#28c840"></div></div><div style="font-size:8px;color:rgba(255,255,255,.28);letter-spacing:.06em">ADMIN</div></div><div class="mock-body"><div style="display:flex;gap:7px;margin-bottom:9px"><div style="flex:1;height:30px;background:rgba(200,169,110,.18);border-radius:4px;border:1px solid rgba(200,169,110,.28)"></div><div style="width:30px;height:30px;background:rgba(255,255,255,.06);border-radius:4px"></div></div><div class="mock-row"></div><div class="mock-row short"></div><div style="height:1px;background:rgba(255,255,255,.06);margin:9px 0"></div><div class="mock-row medium"></div><div class="mock-row"></div></div></div></div></div></div>
+      <div class="project-info"><div class="project-cat">Platform / Dev</div><div class="project-name">Inventory Management System</div><div class="project-desc">Custom-built admin platform for retail operations</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-visual reveal">
+    <div class="about-canvas">
+      <!-- BIG watermark -->
+      <svg class="about-logo-watermark" viewBox="0 0 160 96" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.0878 3.53538L3.07158 46.206C1.7051 47.6631 1.72194 49.936 3.10986 51.3727L43.0932 92.7616C43.7993 93.4925 44.7719 93.9053 45.7882 93.9053H112.519C113.511 93.9053 114.463 93.5118 115.165 92.8111L156.542 51.5375C158.039 50.0437 158.004 47.6074 156.465 46.1571L111.047 3.37115C110.351 2.71622 109.432 2.3515 108.477 2.3515L45.8211 2.35149C44.7855 2.35149 43.7962 2.78003 43.0878 3.53538Z" stroke="white" stroke-width="3.74713"/><path d="M81.0263 76.8503C75.8976 76.8503 71.3625 75.7581 67.421 73.5736C63.4794 71.3417 60.3927 68.3024 58.1608 64.4559C55.9288 60.5619 54.8128 56.098 54.8128 51.0642C54.8128 46.0305 55.9288 41.5903 58.1608 37.7438C60.3927 33.8497 63.4794 30.8105 67.421 28.626C71.3625 26.3941 75.8976 25.2781 81.0263 25.2781C84.398 25.2781 87.366 25.753 89.9304 26.7027C92.5422 27.6525 94.7979 28.9584 96.6975 30.6205C98.597 32.2351 100.212 34.1109 101.541 36.2479L90.5715 42.73C89.9066 41.6853 89.0519 40.7593 88.0071 39.952C87.0099 39.1447 85.8939 38.5273 84.6592 38.0999C83.472 37.625 82.261 37.3876 81.0263 37.3876C78.557 37.3876 76.3725 37.9812 74.473 39.1684C72.5734 40.3081 71.0776 41.899 69.9853 43.941C68.8931 45.983 68.347 48.3574 68.347 51.0642C68.347 53.7235 68.8694 56.098 69.9141 58.1874C70.9588 60.2769 72.4547 61.9153 74.4017 63.1025C76.3962 64.2897 78.7232 64.8833 81.3825 64.8833C83.282 64.8833 84.9679 64.5509 86.44 63.886C87.9121 63.1737 89.0756 62.2002 89.9304 60.9655C90.7852 59.6833 91.2126 58.2112 91.2126 56.5491L103.749 54.1984C103.749 59.2322 102.776 63.4349 100.829 66.8066C98.8819 70.1782 96.1988 72.6951 92.7797 74.3572C89.408 76.0193 85.4902 76.8503 81.0263 76.8503ZM80.1003 58.045V48.0724H103.749V55.4094L96.2701 58.045H80.1003Z" fill="white"/><line x1="54.9612" y1="12.6731" x2="15.7994" y2="53.4399" stroke="white" stroke-width="15.334"/><line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(-0.692769 -0.721159 -0.721159 0.692769 49.4321 88.8951)" stroke="white" stroke-width="15.334"/><line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(0.692769 0.721159 0.721159 -0.692769 109.161 7.36168)" stroke="white" stroke-width="15.334"/><line x1="103.632" y1="83.5836" x2="142.794" y2="42.8169" stroke="white" stroke-width="15.334"/></svg>
+      <!-- Logo mark -->
+      <svg class="about-gvisions-logo" viewBox="0 0 160 96" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.0878 3.53538L3.07158 46.206C1.7051 47.6631 1.72194 49.936 3.10986 51.3727L43.0932 92.7616C43.7993 93.4925 44.7719 93.9053 45.7882 93.9053H112.519C113.511 93.9053 114.463 93.5118 115.165 92.8111L156.542 51.5375C158.039 50.0437 158.004 47.6074 156.465 46.1571L111.047 3.37115C110.351 2.71622 109.432 2.3515 108.477 2.3515L45.8211 2.35149C44.7855 2.35149 43.7962 2.78003 43.0878 3.53538Z" stroke="white" stroke-width="3.74713"/><path d="M81.0263 76.8503C75.8976 76.8503 71.3625 75.7581 67.421 73.5736C63.4794 71.3417 60.3927 68.3024 58.1608 64.4559C55.9288 60.5619 54.8128 56.098 54.8128 51.0642C54.8128 46.0305 55.9288 41.5903 58.1608 37.7438C60.3927 33.8497 63.4794 30.8105 67.421 28.626C71.3625 26.3941 75.8976 25.2781 81.0263 25.2781C84.398 25.2781 87.366 25.753 89.9304 26.7027C92.5422 27.6525 94.7979 28.9584 96.6975 30.6205C98.597 32.2351 100.212 34.1109 101.541 36.2479L90.5715 42.73C89.9066 41.6853 89.0519 40.7593 88.0071 39.952C87.0099 39.1447 85.8939 38.5273 84.6592 38.0999C83.472 37.625 82.261 37.3876 81.0263 37.3876C78.557 37.3876 76.3725 37.9812 74.473 39.1684C72.5734 40.3081 71.0776 41.899 69.9853 43.941C68.8931 45.983 68.347 48.3574 68.347 51.0642C68.347 53.7235 68.8694 56.098 69.9141 58.1874C70.9588 60.2769 72.4547 61.9153 74.4017 63.1025C76.3962 64.2897 78.7232 64.8833 81.3825 64.8833C83.282 64.8833 84.9679 64.5509 86.44 63.886C87.9121 63.1737 89.0756 62.2002 89.9304 60.9655C90.7852 59.6833 91.2126 58.2112 91.2126 56.5491L103.749 54.1984C103.749 59.2322 102.776 63.4349 100.829 66.8066C98.8819 70.1782 96.1988 72.6951 92.7797 74.3572C89.408 76.0193 85.4902 76.8503 81.0263 76.8503ZM80.1003 58.045V48.0724H103.749V55.4094L96.2701 58.045H80.1003Z" fill="white"/><line x1="54.9612" y1="12.6731" x2="15.7994" y2="53.4399" stroke="white" stroke-width="15.334"/><line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(-0.692769 -0.721159 -0.721159 0.692769 49.4321 88.8951)" stroke="white" stroke-width="15.334"/><line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(0.692769 0.721159 0.721159 -0.692769 109.161 7.36168)" stroke="white" stroke-width="15.334"/><line x1="103.632" y1="83.5836" x2="142.794" y2="42.8169" stroke="white" stroke-width="15.334"/></svg>
+      <div class="about-name-display">Germán Stöwhas<span>GVisions Studio</span></div>
+    </div>
+    <div class="about-rings"><div class="ring ring-1"></div><div class="ring ring-2"></div><div class="ring ring-3"></div></div>
+    <div class="about-stat-card card-a"><div class="stat-val">5+</div><div class="stat-lbl">Years Experience</div></div>
+    <div class="about-stat-card card-b"><div class="stat-val">40+</div><div class="stat-lbl">Projects Delivered</div></div>
+  </div>
+  <div class="about-text reveal reveal-delay-2">
+    <p class="section-label">About Me</p>
+    <h2 class="section-title">Designer by passion,<br><em>builder by curiosity.</em></h2>
+    <p>I'm Germán Stöwhas — the designer behind GVisions Studio. I believe that good design solves real problems. I work across the full spectrum, from understanding the user's mental model to crafting pixel-perfect interfaces that feel inevitable.</p>
+    <p>When design alone isn't enough, I build. My coding skills let me go beyond mockups and actually ship — custom platforms, admin tools, and internal systems that bring design to life.</p>
+    <div class="about-tags">
+      <span class="about-tag">Figma</span><span class="about-tag">Wireframing</span><span class="about-tag">Brand Strategy</span>
+      <span class="about-tag">Prototyping</span><span class="about-tag">HTML / CSS</span><span class="about-tag">UX Research</span>
+      <span class="about-tag">Design Systems</span><span class="about-tag">JavaScript</span>
+    </div>
+    <a href="#contact" class="btn-primary">Work Together →</a>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div style="text-align:center;max-width:580px;margin:0 auto 14px" class="reveal">
+    <p class="section-label">How I Work</p>
+    <h2 class="section-title">A process built<br>for <em>clarity.</em></h2>
+  </div>
+  <div class="process-grid reveal reveal-delay-1">
+    <div class="process-step"><div class="process-num">01</div><div class="process-title">Discover</div><div class="process-desc">Deep-dive into your goals, users, and context. No assumptions — just listening, asking, and mapping the real problem.</div></div>
+    <div class="process-step"><div class="process-num">02</div><div class="process-title">Structure</div><div class="process-desc">Wireframes, flows, and architecture. Building the skeleton before the skin — so nothing important gets missed.</div></div>
+    <div class="process-step"><div class="process-num">03</div><div class="process-title">Design</div><div class="process-desc">High-fidelity interfaces with intentional detail — typography, color, motion, and spacing all working together.</div></div>
+    <div class="process-step"><div class="process-num">04</div><div class="process-title">Deliver</div><div class="process-desc">Handoff files, design systems, or fully functional builds — depending on what you actually need to ship.</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label">Get in Touch</p>
+  <h2 class="section-title">Have a project<br><em>in mind?</em></h2>
+  <p>I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.</p>
+  <div class="contact-brand">
+    <svg viewBox="0 0 160 96" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.0878 3.53538L3.07158 46.206C1.7051 47.6631 1.72194 49.936 3.10986 51.3727L43.0932 92.7616C43.7993 93.4925 44.7719 93.9053 45.7882 93.9053H112.519C113.511 93.9053 114.463 93.5118 115.165 92.8111L156.542 51.5375C158.039 50.0437 158.004 47.6074 156.465 46.1571L111.047 3.37115C110.351 2.71622 109.432 2.3515 108.477 2.3515L45.8211 2.35149C44.7855 2.35149 43.7962 2.78003 43.0878 3.53538Z" stroke="white" stroke-width="3.74713"/><path d="M81.0263 76.8503C75.8976 76.8503 71.3625 75.7581 67.421 73.5736C63.4794 71.3417 60.3927 68.3024 58.1608 64.4559C55.9288 60.5619 54.8128 56.098 54.8128 51.0642C54.8128 46.0305 55.9288 41.5903 58.1608 37.7438C60.3927 33.8497 63.4794 30.8105 67.421 28.626C71.3625 26.3941 75.8976 25.2781 81.0263 25.2781C84.398 25.2781 87.366 25.753 89.9304 26.7027C92.5422 27.6525 94.7979 28.9584 96.6975 30.6205C98.597 32.2351 100.212 34.1109 101.541 36.2479L90.5715 42.73C89.9066 41.6853 89.0519 40.7593 88.0071 39.952C87.0099 39.1447 85.8939 38.5273 84.6592 38.0999C83.472 37.625 82.261 37.3876 81.0263 37.3876C78.557 37.3876 76.3725 37.9812 74.473 39.1684C72.5734 40.3081 71.0776 41.899 69.9853 43.941C68.8931 45.983 68.347 48.3574 68.347 51.0642C68.347 53.7235 68.8694 56.098 69.9141 58.1874C70.9588 60.2769 72.4547 61.9153 74.4017 63.1025C76.3962 64.2897 78.7232 64.8833 81.3825 64.8833C83.282 64.8833 84.9679 64.5509 86.44 63.886C87.9121 63.1737 89.0756 62.2002 89.9304 60.9655C90.7852 59.6833 91.2126 58.2112 91.2126 56.5491L103.749 54.1984C103.749 59.2322 102.776 63.4349 100.829 66.8066C98.8819 70.1782 96.1988 72.6951 92.7797 74.3572C89.408 76.0193 85.4902 76.8503 81.0263 76.8503ZM80.1003 58.045V48.0724H103.749V55.4094L96.2701 58.045H80.1003Z" fill="white"/><line x1="54.9612" y1="12.6731" x2="15.7994" y2="53.4399" stroke="white" stroke-width="15.334"/><line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(-0.692769 -0.721159 -0.721159 0.692769 49.4321 88.8951)" stroke="white" stroke-width="15.334"/><line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(0.692769 0.721159 0.721159 -0.692769 109.161 7.36168)" stroke="white" stroke-width="15.334"/><line x1="103.632" y1="83.5836" x2="142.794" y2="42.8169" stroke="white" stroke-width="15.334"/></svg>
+    <div class="contact-brand-text">
+      <div class="contact-brand-name">Germán Stöwhas</div>
+      <div class="contact-brand-sub">GVisions Studio · Digital Designer</div>
+    </div>
+  </div>
+  <a href="mailto:hello@gvisions.studio" class="contact-email">hello@gvisions.studio</a>
+  <div class="social-links">
+    <a href="#" class="social-link">Dribbble</a>
+    <a href="#" class="social-link">Behance</a>
+    <a href="#" class="social-link">LinkedIn</a>
+    <a href="#" class="social-link">Instagram</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <svg viewBox="0 0 160 96" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.0878 3.53538L3.07158 46.206C1.7051 47.6631 1.72194 49.936 3.10986 51.3727L43.0932 92.7616C43.7993 93.4925 44.7719 93.9053 45.7882 93.9053H112.519C113.511 93.9053 114.463 93.5118 115.165 92.8111L156.542 51.5375C158.039 50.0437 158.004 47.6074 156.465 46.1571L111.047 3.37115C110.351 2.71622 109.432 2.3515 108.477 2.3515L45.8211 2.35149C44.7855 2.35149 43.7962 2.78003 43.0878 3.53538Z" stroke="white" stroke-width="3.74713"/><path d="M81.0263 76.8503C75.8976 76.8503 71.3625 75.7581 67.421 73.5736C63.4794 71.3417 60.3927 68.3024 58.1608 64.4559C55.9288 60.5619 54.8128 56.098 54.8128 51.0642C54.8128 46.0305 55.9288 41.5903 58.1608 37.7438C60.3927 33.8497 63.4794 30.8105 67.421 28.626C71.3625 26.3941 75.8976 25.2781 81.0263 25.2781C84.398 25.2781 87.366 25.753 89.9304 26.7027C92.5422 27.6525 94.7979 28.9584 96.6975 30.6205C98.597 32.2351 100.212 34.1109 101.541 36.2479L90.5715 42.73C89.9066 41.6853 89.0519 40.7593 88.0071 39.952C87.0099 39.1447 85.8939 38.5273 84.6592 38.0999C83.472 37.625 82.261 37.3876 81.0263 37.3876C78.557 37.3876 76.3725 37.9812 74.473 39.1684C72.5734 40.3081 71.0776 41.899 69.9853 43.941C68.8931 45.983 68.347 48.3574 68.347 51.0642C68.347 53.7235 68.8694 56.098 69.9141 58.1874C70.9588 60.2769 72.4547 61.9153 74.4017 63.1025C76.3962 64.2897 78.7232 64.8833 81.3825 64.8833C83.282 64.8833 84.9679 64.5509 86.44 63.886C87.9121 63.1737 89.0756 62.2002 89.9304 60.9655C90.7852 59.6833 91.2126 58.2112 91.2126 56.5491L103.749 54.1984C103.749 59.2322 102.776 63.4349 100.829 66.8066C98.8819 70.1782 96.1988 72.6951 92.7797 74.3572C89.408 76.0193 85.4902 76.8503 81.0263 76.8503ZM80.1003 58.045V48.0724H103.749V55.4094L96.2701 58.045H80.1003Z" fill="white"/><line x1="54.9612" y1="12.6731" x2="15.7994" y2="53.4399" stroke="white" stroke-width="15.334"/><line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(-0.692769 -0.721159 -0.721159 0.692769 49.4321 88.8951)" stroke="white" stroke-width="15.334"/><line y1="-7.66699" x2="56.5294" y2="-7.66699" transform="matrix(0.692769 0.721159 0.721159 -0.692769 109.161 7.36168)" stroke="white" stroke-width="15.334"/><line x1="103.632" y1="83.5836" x2="142.794" y2="42.8169" stroke="white" stroke-width="15.334"/></svg>
+    <span>Germán Stöwhas · GVisions Studio</span>
+  </div>
+  <span>© 2025 · Crafted with care ✦ Available worldwide</span>
+</footer>
+
+<script>
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function tick(){
+    dot.style.left=mx+'px';dot.style.top=my+'px';
+    rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+    ring.style.left=rx+'px';ring.style.top=ry+'px';
+    requestAnimationFrame(tick);
+  })();
+  const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  const nav=document.getElementById('mainNav');
+  window.addEventListener('scroll',()=>{
+    nav.style.background=window.scrollY>50?'rgba(245,244,240,0.93)':'rgba(245,244,240,0.78)';
+    const y=window.scrollY;
+    document.querySelector('.shape-1').style.transform=`translateY(${y*.14}px)`;
+    document.querySelector('.shape-2').style.transform=`translateY(${-y*.09}px)`;
+    document.querySelector('.hero-logo-bg').style.transform=`translate(-50%,-52%) rotate(${y*.02}deg)`;
+  });
+</script>
+</body>
+</html>
